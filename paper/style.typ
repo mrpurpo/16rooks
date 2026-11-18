@@ -30,7 +30,7 @@
 #let problem(name: none, numbered: false, body) = _thm-env("prob", [Problema], name: name, italic: false, numbered: numbered, body)
 
 #let proof(title: [Demostración], body) = block(breakable: true, above: 0.6em, below: 1em, width: 100%)[
-  _#title._#h(0.4em)#body#h(1fr)$square.stroked$
+  _#title._#h(0.4em)#body#h(0.5em)#h(1fr)$square.stroked$
 ]
 
 #let remark(title: [Observación], body) = block(breakable: true, above: 0.8em, below: 0.8em, width: 100%)[
@@ -49,9 +49,11 @@
   affiliation: none,
   date: none,
   abstract: none,
+  draft: false,
   body,
 ) = {
   let running = if short-title != none { short-title } else { title }
+  let draft-tag = text(size: 8.5pt, fill: luma(120), tracking: 0.08em, smallcaps[*Draft*])
 
   set page(
     paper: "a4",
@@ -63,8 +65,10 @@
           columns: (1fr, auto),
           align: (left, right),
           smallcaps(running),
-          counter(page).display("1"),
+          if draft [#draft-tag#h(1em)#counter(page).display("1")] else [#counter(page).display("1")],
         )
+      } else if draft {
+        align(right, draft-tag)
       }
     },
     footer: context {

@@ -9,6 +9,7 @@
   author: [Sebastián Gabriel Morón Romero],
   affiliation: [Demuestratón ENIM 2026],
   date: [#_hoy.day() de #_meses.at(_hoy.month() - 1) de #_hoy.year()],
+  draft: true,
   abstract: [Determinamos el número mínimo exacto de movimientos necesarios para intercambiar dos filas opuestas de $n$ torres blancas y $n$ torres negras en un tablero de $m times n$ ($m >= 5, n >= 2$) sin capturas ni alternancia obligatoria de turnos. Demostramos que dicho mínimo es $4n + 1$ ($33$ en el tablero estándar de $8 times 8$) mediante una descomposición en movimientos horizontales y verticales junto con un argumento extremal, exhibimos la construcción explícita que alcanza la cota y estudiamos las variaciones según el número de filas y el tipo de pieza en el tablero $8 times 8$.],
 )
 
