@@ -71,7 +71,7 @@ En la @sec:otras-piezas se estudian las variaciones en el tablero de $8 times 8$
     table.hline(stroke: 0.4pt),
     [Torre], [$33$], [Caso particular del @thm:rooks ($4n + 1$ para $m >= 5, n = 8$).],
     [Dama], [$23$], [Resultado de Tokarev @tokarev2005: $6$ pares centrales en $3$ y $4$ esquinas en $5$.],
-    [Alfil], [$32$], [Partición por color de casilla en dos subproblemas isomorfos a torres.],
+    [Alfil], [$30$], [Partición por color de casilla en dos subproblemas de $15$ movimientos.],
     [Caballo], [$64$], [Enfoque por teoría de grafos (extensión del método de Guarini).],
     [Rey], [$112$], [$7$ pasos por cada una de las $16$ piezas mediante cruces diagonales.],
     [Peón], [Imposible], [Sin capturas los peones no cambian de columna ni pueden sobrepasarse.],

@@ -69,7 +69,7 @@ Para cualquier tablero de $m >= 5$ filas y $n >= 2$ columnas (etiquetando las co
 
 El total es $1 + 3(n - 1) + 4 + (n - 1) = 4n + 1$, con $H = n$, $V = 3n + 1$ y $L = sum_c ell_c = n - 1$, verificando $V = 4n - L$ y $H = sum_c ell_c + 1$. Esto completa la demostración del @thm:rooks.
 
-En particular, para $m = n = 8$ (columnas `a`–`h`), la secuencia resultante de $33$ movimientos es:
+En particular, para $m = n = 8$ (columnas `a`–`h`), la secuencia resultante de $33$ movimientos es (ver listado completo sin abreviaciones en la @sec:ap-torres):
 
 #block(breakable: false, inset: (left: 1.5em), above: 0.7em, below: 0.7em)[
   #set text(font: ("DejaVu Sans Mono", "Liberation Mono"), size: 9pt)

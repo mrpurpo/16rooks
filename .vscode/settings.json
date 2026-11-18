@@ -2,7 +2,7 @@
   "tinymist.exportPdf": "onSave",
   "tinymist.formatterMode": "typstyle",
   "tinymist.projectResolution": "lockDatabase",
-  "tinymist.rootPath": ".",
+  "tinymist.rootPath": "paper",
   "[typst]": {
     "editor.defaultFormatter": "myriad-dreamin.tinymist",
     "editor.formatOnSave": true
