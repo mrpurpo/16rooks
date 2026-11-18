@@ -1,0 +1,36 @@
+# Literatura (PDFs de papers y libros, con copyright y pesados)
+literature/**/*.pdf
+literature/**/*.djvu
+literature/**/*.epub
+
+# Salidas compiladas de Typst
+*.pdf
+
+# Typst / Tinymist cache & artifacts
+.typst/
+.tinymist/
+
+# Editores
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# Python / código
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+build/
+dist/
+*.o
+*.out
+*.exe
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
