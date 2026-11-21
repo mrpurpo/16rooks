@@ -48,5 +48,5 @@ En la @sec:otras-piezas determinamos el mínimo en $8 times 8$ para las demás p
 - *Peones:* imposible ($T_min = infinity$).
 - *Reyes (@prop:kings):* $112$ movimientos ($2n(m - 1)$ en general, para $m >= 3$, $n >= 2$).
 - *Damas (@prop:queens, Tokarev @tokarev2005):* $23$ movimientos.
-- *Alfiles (@prop:bishops):* $30$ movimientos ($15$ por color de casilla).
-- *Caballos (@prop:knights):* $64$ movimientos ($4$ saltos por caballo).
+- *Alfiles (@prop:bishops):* $30$ movimientos.
+- *Caballos (@prop:knights):* $64$ movimientos.

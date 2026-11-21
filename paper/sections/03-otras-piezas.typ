@@ -19,12 +19,7 @@ El intercambio es imposible: sin capturas, cada peón solo avanza dentro de su c
 #proof[
   *Cota inferior.* Cada uno de los $2n$ reyes debe avanzar $m - 1$ filas y cambia de fila a lo sumo una unidad por turno, de donde $T >= 2n(m - 1)$.
 
-  *Construcción óptima.* Como $m >= 3$ y $n >= 2$, cada columna $c_j$ tiene una fila intermedia y una columna adyacente $c_(j')$ ($j' = j + 1$ si $j < n$, y $j' = n - 1$ si $j = n$), lo que permite intercambiar sus dos reyes en $2(m - 1)$ movimientos sin alterar las demás columnas:
-  + El rey blanco se aparta en diagonal de $(j, 1)$ a $(j', 2)$, libre porque los reyes de $c_(j')$ ocupan las filas $1$ y $m$ ($1$ movimiento).
-  + El rey negro desciende por $c_j$ de $(j, m)$ a $(j, 1)$ ($m - 1$ movimientos).
-  + El rey blanco regresa en diagonal a $(j, 3)$ y sube por $c_j$ hasta $(j, m)$ ($m - 2$ movimientos).
-
-  Cada paso, vertical o diagonal, avanza una fila hacia el destino. Repitiendo la maniobra en $c_1, dots, c_n$ se obtienen $2n(m - 1)$ movimientos; la secuencia de $112$ para $m = n = 8$ está en la @sec:ap-reyes.
+  *Construcción óptima.* Como $m >= 3$ y $n >= 2$, los dos reyes de cada columna $c_j$ pueden intercambiarse en $2(m - 1)$ movimientos usando una columna vecina solo de paso: el rey blanco se aparta en diagonal a la fila $2$ de la columna vecina ($1$ movimiento), el negro baja recto por $c_j$ hasta $(j, 1)$ ($m - 1$ movimientos), y el blanco vuelve en diagonal a $(j, 3)$ para terminar de subir por $c_j$ ($m - 2$ movimientos). Como los dos pasos diagonales también avanzan una fila hacia el destino, ningún rey pierde turnos verticales. Repitiendo la maniobra en las $n$ columnas se obtienen $2n(m - 1)$ movimientos (véase la secuencia de $112$ movimientos para $8 times 8$ en la @sec:ap-reyes).
 ]
 
 #remark(title: [Generalización a configuraciones arbitrarias])[
@@ -40,7 +35,7 @@ El intercambio es imposible: sin capturas, cada peón solo avanza dentro de su c
 #proof[
   Seguimos el argumento de conteo de Tokarev @tokarev2005, dividiendo las $16$ damas en siete grupos: los $6$ pares de las columnas centrales (`b` a `g`) y las $4$ damas de las esquinas (`a1`, `a8`, `h1`, `h8`).
 
-  *Cota inferior.* Desde una columna central, una diagonal que parte de la fila $1$ u $8$ recorre a lo sumo $6$ filas antes del borde lateral, así que no alcanza la fila opuesta. La primera dama de cada par central en moverse tiene además su columna bloqueada por la adversaria, por lo que necesita al menos $2$ movimientos y la segunda al menos $1$: $3$ por par. En las esquinas, la primera dama en moverse encuentra ocupadas su columna y su diagonal hacia la esquina opuesta y necesita $2$ movimientos, y las otras tres al menos $1$: $5$ en total. Sumando,
+  *Cota inferior.* Desde una columna central, una diagonal que parte de la fila $1$ u $8$ recorre a lo sumo $6$ filas antes del borde lateral, así que no alcanza la fila opuesta. La primera dama de cada par central en moverse tiene además su columna bloqueada por la adversaria, por lo que necesita al menos $2$ movimientos y la segunda al menos $1$, es decir, $3$ movimientos por par. En las esquinas, la primera dama en moverse encuentra ocupadas su columna y su diagonal hacia la esquina opuesta y necesita $2$ movimientos, y las otras tres al menos $1$, por lo que deben hacer $5$ en total. Sumando,
   $ T >= 6 dot 3 + 5 = 23. $
 
   *Construcción óptima.* La cota se alcanza con la construcción de Tokarev @tokarev2005 (@fig:damas-tokarev), transcrita en la @sec:ap-damas.
@@ -64,11 +59,11 @@ El intercambio es imposible: sin capturas, cada peón solo avanza dentro de su c
   $ T_1 >= 3 + 6 dot 2 = 15, $
   y por reflexión horizontal las casillas claras requieren también $15$, de donde $T >= 30$.
 
-  *Construcción óptima.* En las casillas oscuras se despeja primero la diagonal principal: el negro de `b8` va a `h2` ($1$); el blanco de `a1` llega a `b8` vía `e5` ($2$); el negro de `h8` recorre la diagonal hasta `a1` ($1$); el blanco de `g1` sube a `h8` vía `d4` ($2$), y el negro de `h2` entra en `g1` ($1$). Los pares restantes (`c1, f8` y `e1, d8`) se intercambian en $4$ movimientos cada uno rebotando en las columnas `a` y `h`, para un total de $7 + 4 + 4 = 15$. Reflejando horizontalmente para las casillas claras se obtienen los $30$ movimientos de la @sec:ap-alfiles.
+  *Construcción óptima.* La cota $T_1 = 15$ en las casillas oscuras se alcanza haciendo que uno de los alfiles de las esquinas (`h8`) cruce la diagonal principal `h8`–`a1` en un solo movimiento (una vez despejadas ambas esquinas), mientras que los otros $7$ alfiles llegan a la fila opuesta en exactamente $2$ movimientos cada uno, pasando por una casilla intermedia ($1 + 7 dot 2 = 15$). Aplicando la reflexión horizontal de esta secuencia a las casillas claras se obtienen los $30$ movimientos listados en la @sec:ap-alfiles.
 ]
 
 #remark(title: [Sobre la generalización a tableros $m times n$])[
-  Rotando el tablero $45 degree$, cada subproblema monocromático es análogo al intercambio de torres de la @sec:problema-principal, pero en $m times n$ surgen obstrucciones adicionales. Primero, el color exige que las filas $1$ y $m$ tengan las mismas cantidades de casillas de cada color, lo que falla si $m$ es par y $n$ impar (en $8 times 7$, la fila $1$ tiene $4$ oscuras y $3$ claras, y la fila $8$, $3$ y $4$), haciendo imposible el intercambio. Segundo, aun con cantidades iguales, los tableros demasiado estrechos (como $8 times 2$) o con muy pocas filas carecen de diagonales intermedias para que los alfiles se sorteen. Tercero, como un movimiento diagonal en un tablero de ancho $n$ avanza a lo sumo $n - 1$ filas, con $n$ fijo cada alfil efectúa al menos $ceil((m - 1) / (n - 1))$ rebotes entre los bordes laterales, lo que permite conjeturar que el mínimo por pieza crece asintóticamente en proporción a $m / n$. Queda abierto caracterizar las dimensiones $(m, n)$ en que el intercambio es factible y hallar una fórmula cerrada para su mínimo.
+  Al analizar el caso $m times n$, surgen algunas obstrucciones adicionales. Primero, el color exige que las filas $1$ y $m$ tengan las mismas cantidades de casillas de cada color, lo que falla si $m$ es par y $n$ impar, haciendo imposible el intercambio. Segundo, aun con cantidades iguales, los tableros demasiado estrechos (como $8 times 2$) o con muy pocas filas carecen de diagonales intermedias para que los alfiles se sorteen. Tercero, como un movimiento diagonal en un tablero de ancho $n$ avanza a lo sumo $n - 1$ filas, con $n$ fijo cada alfil efectúa al menos $ceil((m - 1) / (n - 1))$ rebotes entre los bordes laterales, lo que permite conjeturar que el mínimo por pieza crece asintóticamente en proporción a $m / n$. Queda abierto caracterizar las dimensiones $(m, n)$ en que el intercambio es factible y hallar una fórmula cerrada para su mínimo.
 ]
 
 == Caballos
@@ -80,10 +75,7 @@ El intercambio es imposible: sin capturas, cada peón solo avanza dentro de su c
 #proof[
   *Cota inferior.* Un caballo cambia su fila en $1$ o $2$ unidades por salto, así que cada uno de los $16$ necesita al menos $ceil(7 / 2) = 4$ saltos: $T >= 64$.
 
-  *Construcción óptima.* Alcanzar $T = 64$ exige que cada caballo dé exactamente $4$ saltos hacia adelante, tres de $+2$ filas y uno de $+1$. Mediante búsqueda computacional (véase la Declaración de herramientas) se obtuvo la secuencia de la @sec:ap-caballos, con la siguiente estructura:
-  + *Simetría central par a par:* cada movimiento blanco $2k - 1$ y el negro $2k$ que le sigue se corresponden por la rotación de $180 degree$, $(j, r) |-> (9 - j, 9 - r)$ (p. ej., `f1-e3` y `c8-d6`).
-  + *Perfiles monótonos de filas:* los blancos de `a1, b1, c1, f1` recorren las filas $1 -> 3 -> 4 -> 6 -> 8$, y los de `d1, e1, g1, h1`, $1 -> 2 -> 4 -> 6 -> 8$; los negros siguen los perfiles simétricos $8 -> 6 -> 5 -> 3 -> 1$ y $8 -> 7 -> 5 -> 3 -> 1$.
-  + *Desfase temporal:* las trayectorias que comparten casillas de paso (como `b6`, `c6`, `f3` y `g3`) se intercalan de modo que cada casilla se desocupa antes del siguiente salto a ella.
+  *Construcción óptima.* Alcanzar $T = 64$ exige que cada caballo realice exactamente $4$ saltos hacia adelante (tres de avance vertical $+2$ y uno de $+1$). Mediante búsqueda computacional (véase la Declaración de herramientas) se obtuvo la secuencia de la @sec:ap-caballos, en la cual cada jugada blanca $2k - 1$ y la jugada negra siguiente $2k$ son centralmente simétricas por la rotación de $180 degree$ del tablero, y las trayectorias se dividen en dos perfiles monótonos de filas ($1 -> 3 -> 4 -> 6 -> 8$ y $1 -> 2 -> 4 -> 6 -> 8$, junto con sus simétricos) desfasados en el tiempo para no coincidir en las casillas intermedias de paso.
 ]
 
 #remark(title: [Enfoque mediante teoría de grafos y complejidad])[
