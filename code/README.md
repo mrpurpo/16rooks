@@ -39,7 +39,9 @@ src/core.hpp           board, components, position keys, move generation
 src/solve.hpp          `solve` (layered BFS, meet in the middle, --count, --alternate)
 src/construct.hpp      `construct` (IDA*)
 src/main.cpp           C++ driver (JSON on stdout, progress on stderr)
-tests/                 run_fast_tests.py, run_full_tests.py, cases.py, reference.py, data/
+tests/                 run_fast_tests.py, run_full_tests.py, cases.py, data/
+tests/reference.py     independent plain-BFS solver (also a command-line tool)
+tests/structure.py     enumerates all optimal rook sequences and checks their structure
 ```
 
 ## Model
@@ -183,8 +185,8 @@ Before `solve` searches a component, it estimates the size of the state space,
 `C(N,k)·C(N−k,k)` (doubled with `--alternate`), and the memory that would need. If the
 estimate exceeds 1e8 positions (`--max-positions`) or the available RAM (`MemAvailable`), it
 refuses and suggests `construct`, unless `--force` is given. Bishop 8x8 needs `--force`: its
-estimate is 7.4e8 positions, but meet in the middle visits only about 1.2e8 (at most two layers in memory at once) and finishes in
-about 50 s.
+estimate is 7.4e8 positions, but meet in the middle visits only about 1.2e8 (at most two layers
+in memory at once) and finishes in about 40 s on the laptop used for the paper.
 
 During the search, the solver:
 
@@ -291,6 +293,68 @@ on the empty board, it is infinite, meaning the swap is impossible.
 `--format appendix` instead emits the `#move-table((("B","a1-a3"), …))` call used in
 `paper/sections/apendice.typ`. `solve` and `construct` accept `--export FILE.typ`.
 
+## Reproducing the paper
+
+Every number in the section "Verificación computacional" of the paper comes from one of the
+commands below. `F` is the number of files (the paper's `n`) and `R` the number of ranks (the
+paper's `m`). Timings are for the laptop named in the paper (Intel Core i7-13620H, 16 GB).
+
+**Exact minima for rooks (Table "torres").** One command per board, for `n ∈ {2,3}` and
+`m = 3…10`, `n = 4` and `m = 3…8`, `n = 5` and `m = 3…5`:
+
+```
+python3 swaprows.py solve rook F R --force
+python3 swaprows.py solve rook 5 5 --force    # the largest case: ~2.5e8 positions, ~2 min
+```
+
+The number of positions visited is the sum of the per-layer counts printed during the search.
+
+**Independent reference for `n ≤ 3`.** `tests/reference.py` is a plain forward BFS with a full
+visited set (no meet in the middle, no components, no symmetry). It stores at most 3e6
+positions by default, so the largest boards need a higher `--limit`:
+
+```
+python3 tests/reference.py rook F R                      # n = 2, and n = 3 with m ≤ 8 (3x8: ~2 min)
+python3 tests/reference.py rook 3 9  --limit 20000000    # ~4 min, ~2.6 GB of RAM
+python3 tests/reference.py rook 3 10 --limit 20000000    # ~8 min, ~5.2 GB of RAM
+```
+
+It prints the minimum and the number of optimal sequences, so it also reproduces the counts
+of the structure table (boards `m×n` = 5×2, 6×2, 7×2, 8×2, 5×3, 6×3).
+
+**Structure of the optimal sequences (Table "estructura").**
+
+```
+python3 swaprows.py solve rook F R --count    # counts, with the C++ core
+python3 tests/structure.py                    # enumeration + properties 1-3, ~10 s
+```
+
+`tests/structure.py` is self-contained (its own move generation and BFS, nothing shared with the
+C++ core or with `swaprows/`). It enumerates every optimal sequence on the six boards and checks
+properties 1-3 of the paper, plus the stronger ordering `p_E < p_Q < p_S` of the parking rows
+from the proof. Its counts must equal those of `solve --count`. `python3 tests/structure.py 2 4`
+shows that the checks do fail where they should: for `m = 4` the minimum is `4n + 2` and no
+sequence has the structure.
+
+**Kings.** `python3 swaprows.py solve king F R` for `F ∈ {2,3,4}` and `R ∈ {3,4,5,6}` gives
+`2F(R−1)`; `python3 swaprows.py bound king 8 8` gives 112.
+
+**Knights, rooks, queens.** `python3 swaprows.py bound knight 8 8` (64), `bound rook 8 8` (16),
+`bound queen 8 8` (16).
+
+**Bishops.** `python3 swaprows.py solve bishop 8 8 --force` gives 30 (about 1.2e8 positions,
+about 40 s; only one colour class is searched, the other is its mirror image).
+
+**Appendix sequences.** The files in `tests/data/` are the sequences of the paper's appendix:
+
+```
+python3 swaprows.py check rook   8 8 --file tests/data/rook8x8_33.txt
+python3 swaprows.py check queen  8 8 --file tests/data/queen8x8_23_paper.txt --alternate --first white
+python3 swaprows.py check bishop 8 8 --file tests/data/bishop8x8_30_paper.txt
+python3 swaprows.py check knight 8 8 --file tests/data/knight8x8_64_paper.txt
+python3 swaprows.py check king   8 8 --file tests/data/king8x8_112.txt
+```
+
 ## Tests
 
 ```
@@ -311,4 +375,6 @@ The tests cover:
   counts and `--alternate` results on tiny boards for every built-in piece and several custom
   ones.
 - **Hungarian against brute force** on random matrices.
+- **The structure of the optimal rook sequences** (`tests/structure.py`) on 5×2, 6×2 and 5×3,
+  and its failure on 4×2.
 - **Exported tables compile** with `typst`.

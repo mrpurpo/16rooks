@@ -599,3 +599,19 @@ def export_cli_and_integration():
             t = fh.read()
         expect("// 64 moves" in t, t[:80])
         typst_compiles(t)
+
+
+# ======================================================================
+# 7. paper: structure of the optimal rook sequences (tests/structure.py)
+# ======================================================================
+
+@test("paper")
+def structure_of_optimal_rook_sequences():
+    import structure
+    for n, m, count in [(2, 5, 432), (2, 6, 1728), (3, 5, 168144)]:
+        T, (tot, p13, order) = structure.run(n, m)
+        expect(T == 4 * n + 1 and tot == count and p13 == tot and order == tot,
+               f"{m}x{n}: T={T}, {tot} sequences, {p13} satisfy 1-3, {order} ordered")
+    # m = 4: the minimum is 4n + 2 and the 4n + 1 structure cannot hold
+    T, (tot, p13, _) = structure.run(2, 4)
+    expect(T == 10 and tot == 2640 and p13 == 0, f"4x2: T={T}, {tot}, {p13}")

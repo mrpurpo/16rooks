@@ -8,7 +8,11 @@ shortest paths (sum of predecessor counts) and supports alternating turns.
 
 from __future__ import annotations
 
+import os
+import sys
 from collections import deque
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from swaprows.board import Board
 from swaprows.pieces import Piece
@@ -47,7 +51,7 @@ def reference_solve(board: Board, piece: Piece, alternate: bool = False,
                     ns = (frozenset(nw), frozenset(nb), (1 - t) if alternate else None)
                     if ns not in dist:
                         if len(dist) > limit:
-                            raise RuntimeError("reference solver: board too large")
+                            raise RuntimeError(f"reference solver: more than {limit} positions (raise --limit)")
                         dist[ns] = d + 1
                         cnt[ns] = cnt[st]
                         q.append(ns)
@@ -61,3 +65,29 @@ def reference_solve(board: Board, piece: Piece, alternate: bool = False,
         if st[0] == gw and st[1] == gb and d == best:
             total += cnt[st]
     return best, total
+
+
+def main(argv=None) -> int:
+    """Command line: python3 tests/reference.py PIECE F R [--limit N]."""
+    import argparse
+
+    from swaprows.pieces import make_piece
+
+    ap = argparse.ArgumentParser(description="Plain-BFS reference solver (tiny boards).")
+    ap.add_argument("piece")
+    ap.add_argument("files", type=int)
+    ap.add_argument("ranks", type=int)
+    ap.add_argument("--limit", type=int, default=3_000_000,
+                    help="maximum number of stored positions (default 3e6)")
+    a = ap.parse_args(argv)
+    best, total = reference_solve(Board(a.files, a.ranks), make_piece(a.piece), limit=a.limit)
+    name = f"{a.piece} on {a.files}x{a.ranks}"
+    if best is None:
+        print(f"{name}: IMPOSSIBLE")
+    else:
+        print(f"{name}: minimum = {best} moves, {total} optimal sequences (reference BFS)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
