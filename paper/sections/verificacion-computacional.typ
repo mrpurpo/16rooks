@@ -21,7 +21,7 @@ Las demostraciones anteriores no dependen de ningún cálculo, pero pueden contr
 
 == Herramienta
 
-Usamos la herramienta `swaprows` (repositorio `github.com/mrpurpo/16rooks`, carpeta `code/`, versión `7c99bfb`), cuyo `README` describe los algoritmos, su exactitud y los comandos para reproducir cada resultado. Empleamos tres funciones: `solve`, que calcula el mínimo exacto por búsqueda en anchura y, con `--count`, el número de secuencias óptimas; `check`, que verifica de forma independiente que una lista de movimientos es legal y termina en la posición final; y `bound`, la cota inferior por asignación de piezas a casillas destino con distancias en el tablero vacío. Una implementación de referencia independiente (BFS sin optimizaciones) reprodujo los valores de la @tab:torres con $n <= 3$ y los conteos de la @tab:estructura. Los cálculos se hicieron en un portátil con Intel Core i7-13620H y 16 GB de memoria.
+Usamos la herramienta `swaprows` (repositorio `github.com/mrpurpo/16rooks`, carpeta `code/`, versión `8fe8a14`), cuyo `README` describe los algoritmos, su exactitud y los comandos para reproducir cada resultado. Empleamos tres funciones: `solve`, que calcula el mínimo exacto por búsqueda en anchura y, con `--count`, el número de secuencias óptimas; `check`, que verifica de forma independiente que una lista de movimientos es legal y termina en la posición final; y `bound`, la cota inferior por asignación de piezas a casillas destino con distancias en el tablero vacío. Una implementación de referencia independiente (`tests/reference.py`, BFS sin optimizaciones) reprodujo los valores de la @tab:torres con $n <= 3$ y los conteos de la @tab:estructura. Los cálculos se hicieron en un portátil con Intel Core i7-13620H y 16 GB de memoria.
 
 == Mínimos exactos para torres
 
@@ -46,7 +46,7 @@ El espacio de posiciones crece muy rápido: el caso mayor ($m = n = 5$) recorri�
 
 == Estructura de las soluciones óptimas
 
-La demostración de la @prop:rows muestra que toda secuencia de $4n + 1$ movimientos tiene una estructura rígida. Para comprobarlo, enumeramos _todas_ las secuencias óptimas en seis tableros con $m >= 5$ y verificamos en cada una que:
+La demostración de la @prop:rows muestra que toda secuencia de $4n + 1$ movimientos tiene una estructura rígida. Para comprobarlo, un programa autocontenido (`tests/structure.py`, que no comparte código con `solve`) enumera _todas_ las secuencias óptimas en seis tableros con $m >= 5$ y verifica en cada una que:
 
 + hay exactamente una columna excepcional $c_*$, que cumple $ell_* = 0$ y $"out"_* = 1$, y toda otra columna cumple $"out"_j = ell_j >= 1$;
 + $V = 4n - L$, es decir, cada torre alcanza exactamente la cota del @lem:vert;
@@ -69,13 +69,13 @@ La demostración de la @prop:rows muestra que toda secuencia de $4n + 1$ movimie
   caption: [Enumeración completa de las secuencias óptimas para torres. Los conteos coinciden con los de `solve --count`, obtenidos con un programa distinto.],
 ) <tab:estructura>
 
-Las $1 thin 217 thin 568$ secuencias examinadas cumplen las tres propiedades sin excepción (@tab:estructura); un error en el análisis del caso de igualdad de la @prop:rows probablemente se habría manifestado aquí como alguna violación.
+Las $1 thin 217 thin 568$ secuencias examinadas cumplen las tres propiedades sin excepción (@tab:estructura), e incluso el orden $2 <= p_E < p_Q < p_S <= m - 1$ de las filas de estacionamiento que establece la demostración; un error en el análisis del caso de igualdad de la @prop:rows probablemente se habría manifestado aquí como alguna violación.
 
 == Otras piezas
 
 - *Reyes.* `solve` reproduce la fórmula $2n(m - 1)$ de la @prop:kings en los $12$ tableros con $n in {2, 3, 4}$ y $m in {3, 4, 5, 6}$. En $8 times 8$, la cota de `bound` es $112$, lo que certifica por computador la optimalidad de la construcción.
 - *Caballos.* La cota por asignación en $8 times 8$ es $64$, como en la @prop:knights.
-- *Alfiles.* Como la búsqueda se separa por color de casilla, el tablero de $8 times 8$ se resuelve exactamente: `solve` recorre unas $1.2 dot 10^8$ posiciones en $76$ segundos y obtiene $30$, confirmando la @prop:bishops.
+- *Alfiles.* Como la búsqueda se separa por color de casilla, el tablero de $8 times 8$ se resuelve exactamente: `solve` recorre unas $1.2 dot 10^8$ posiciones en unos $40$ segundos y obtiene $30$, confirmando la @prop:bishops.
 - *Construcciones.* Las cinco secuencias del Apéndice (@sec:apendice) pasan `check`: son legales y terminan en la posición final; la de las damas respeta además la alternancia estricta de turnos.
 
 Por contraste, la cota por asignación da solo $16$ para torres y damas en $8 times 8$, lejos de $33$ y $23$: ignora que las piezas se bloquean entre sí, que es justamente lo que capturan el @lem:horiz y el principio extremal.
