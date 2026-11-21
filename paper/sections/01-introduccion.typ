@@ -11,70 +11,42 @@ El presente trabajo aborda el Problema 1 de la Demuestratón del Encuentro Nacio
 
 #figure(
   board(
-    fen("rrrrrrrr/8/8/8/8/8/8/RRRRRRRR"),
+    fen("RRRRRRRR/8/8/8/8/8/8/rrrrrrrr"),
     square-size: 0.65cm,
     white-square-fill: luma(245),
     black-square-fill: luma(205),
     stroke: 0.6pt + black,
     display-numbers: false,
   ),
-  caption: [Configuración inicial en el tablero estándar de $8 times 8$: ocho torres blancas en la primera fila y ocho torres negras en la última.],
+  caption: [Configuración inicial en el tablero estándar de $8 times 8$.],
 ) <fig:config-inicial>
 
-En el planteamiento rigen las siguientes reglas: las piezas de un mismo color son indistinguibles entre sí (solo importa el conjunto final de casillas ocupadas por cada color), no se exige alternancia de turnos entre bandos y no están permitidas las capturas.
+Suponemos que las piezas de un mismo color son indistinguibles (fichas _no etiquetadas_, _unlabeled_), que no se exige alternancia de turnos y que no hay capturas: toda casilla atravesada o alcanzada en un movimiento debe estar vacía.
+
+Nuestro objetivo es determinar y demostrar el número mínimo exacto de movimientos para intercambiar dos filas opuestas de $n$ torres en un tablero de $m times n$ ($m >= 3$, $n >= 2$), y resolver las variaciones en el tablero de $8 times 8$ con las demás piezas del ajedrez.
 
 == Estado del problema <sec:estado>
 
-El intercambio de dos filas de piezas en un tablero se sitúa en la intersección de tres líneas de la combinatoria y la informática teórica: el movimiento de fichas en grafos (_pebble motion on graphs_), la reconfiguración en grafos y grillas (_reconfigurations in graphs and grids_) y los puzles clásicos de intercambio de piezas de ajedrez. A diferencia de los problemas de alcanzabilidad —donde solo interesa decidir si una configuración final es accesible—, aquí buscamos determinar la longitud exacta de una secuencia mínima.
+Los problemas de intercambio de piezas se formulan dentro del modelo de _movimiento de fichas multicolores en grafos_ (_multi-color pebble motion_) @goraly2010: sobre un grafo simple conexo de $N$ vértices hay $p <= N$ fichas repartidas en clases de color de piezas indistinguibles, cada vértice aloja a lo sumo una ficha y un movimiento traslada una ficha a un vértice adyacente vacío. Se distinguen la versión de _factibilidad_ (si una configuración puede transformarse en otra) y la de _optimalidad_ (el número mínimo de movimientos o, como problema de decisión, si basta con $k$). El caso de fichas distinguibles se remonta al puzle del $15$ en una grilla de $4 times 4$, generalizado a grafos arbitrarios mediante el grupo alternante por Wilson @wilson1974 y acotado en $O(N^3)$ movimientos por Kornhauser, Miller y Spirakis @kornhauser1984. Para fichas agrupadas por colores, Goraly y Hassin @goraly2010 y Fujita et al. @fujita2012 caracterizaron las configuraciones alcanzables y demostraron que la factibilidad se decide en tiempo lineal.
 
-=== Movimiento de fichas en grafos (_Pebble Motion_) y fichas coloreadas
+Este modelo describe directamente a las piezas de paso unitario o salto fijo (_leapers_: reyes y caballos), cuyo grafo de adyacencia es estático. Las piezas deslizantes (torres, alfiles y damas), que recorren una línea entera de casillas vacías en un turno, corresponden en cambio al modelo de _reconfiguración en grafos y grillas_ de Călinescu, Dumitrescu y Pach @calinescu2008, donde un movimiento desplaza una ficha no etiquetada por cualquier camino de vértices vacíos. La torre en un tablero de $m times n$ es el caso de caminos rectilíneos, para el cual los autores dan cotas superiores e inferiores en el peor caso.
 
-El desplazamiento de piezas sin capturas sobre un grafo discreto se modela mediante _pebble motion_ (o _multi-agent path finding_), donde los vértices representan casillas y cada movimiento traslada una ficha a un vértice adyacente vacío.
-
-- *Fundamentos de alcanzabilidad y cotas generales.* El campo se inicia con Wilson @wilson1974, quien generalizó el puzle del $15$ a grafos arbitrarios caracterizando las configuraciones alcanzables mediante el grupo alternante, y con Kornhauser, Miller y Spirakis @kornhauser1984, quienes establecieron la cota clásica $O(n^3)$ sobre la longitud de las secuencias. Recientemente, Brunck et al. @brunck2023 extendieron la teoría de Wilson al régimen con múltiples vértices vacíos, reflejando la presencia de filas centrales desocupadas.
-- *Fichas coloreadas (_Colored Pebble Motion_).* Dado que las piezas del mismo color son indistinguibles, el marco exacto corresponde a _colored pebble motion_ con dos clases de color. Goraly y Hassin @goraly2010 y Fujita et al. @fujita2012 caracterizaron la factibilidad y las clases de equivalencia en tiempo lineal; sin embargo, Yu y LaValle @yu2013 @yu2015 probaron que minimizar el número de movimientos es NP-hard en grafos generales incluso con solo dos grupos de fichas intercambiables.
-
-Este modelo describe con exactitud a las piezas de salto o paso unitario (_leapers_, como caballos y reyes), cuyo grafo de movimiento es fijo. Para piezas deslizantes (torres, alfiles y damas), en cambio, un movimiento recorre múltiples casillas vacías colineales y puede ser bloqueado por piezas intermedias, haciendo que las transiciones dependan de la configuración completa.
-
-=== Reconfiguración en grafos y grillas (_Reconfigurations in Graphs and Grids_)
-
-El modelo teórico más cercano al movimiento de las torres es el introducido por Călinescu, Dumitrescu y Pach @calinescu2008:
-
-- *Movimientos de largo alcance en grillas.* Un movimiento desplaza una ficha (_chip_) a lo largo de un camino arbitrario de vértices desocupados. El movimiento de una torre en un tablero de $m times n$ es el caso particular en que dicho camino sobre la grilla se restringe a trayectorias rectilíneas (horizontales o verticales). Su trabajo estudia cotas superiores e inferiores tanto para fichas etiquetadas como no etiquetadas.
-- *Complejidad en grillas y puzles deslizantes.* Cooper et al. @cooper2021 probaron que minimizar movimientos en este modelo sobre grillas (motivado por pinzas ópticas) es NP-completo. Ello se enlaza con la complejidad clásica de puzles deslizantes —la PSPACE-completitud de Hearn y Demaine @hearn2009 y la NP-dificultad de secuencias óptimas en el $(n^2 - 1)$-puzle de Ratner y Warmuth @ratner1990 y Demaine y Rudoy @demaine2017— y con resultados recientes sobre ajedrez solitario por Brunner et al. @brunner2023.
-
-=== Antecedentes en el tablero de ajedrez
-
-El antecedente olímpico más cercano es el problema de S. I. Tokarev (_26th Tournament of Towns_, 2004/2005; _Kvant_, 2005, M1977) @tokarev2005 sobre el intercambio de $8$ damas blancas y $8$ damas negras, cuyo mínimo es $23$. Para caballos, la tradición se remonta al problema de Guarini (1512) en $3 times 3$, popularizado por Dudeney @dudeney1917 mediante el despliegue del grafo de movimientos; recientemente, Iordan @iordan2019 @iordan2021 estudió generalizaciones rectangulares vía grafos bipartitos y tripartitos, y Siegel @siegel2026 demostró que el problema óptimo general de intercambio de caballos es NP-hard.
-
-== Objetivo del trabajo <sec:objetivo>
-
-#todo[Redactar el objetivo concreto del trabajo.]
+En tableros de ajedrez, el antecedente más cercano es el problema de Tokarev @tokarev2005: intercambiar $8$ damas blancas y $8$ negras en las filas extremas de un tablero de $8 times 8$ en $23$ movimientos. Para caballos, el problema se origina con Guarini (1512) en un tablero de $3 times 3$ @dudeney1917 y fue extendido a tableros de $3 times n$ y $4n times 4n$ por Iordan @iordan2019 @iordan2021 mediante grafos bipartitos y tripartitos. En cuanto a complejidad, aunque la factibilidad para fichas coloreadas es polinomial @goraly2010, la optimalidad es NP-hard en grafos generales incluso con dos clases de color del mismo tamaño (Yu y LaValle @yu2013 @yu2015; para puzles deslizantes etiquetados, véase @ratner1990 @hearn2009), para el deslizamiento rectilíneo en grillas (Cooper et al. @cooper2021) y para el intercambio óptimo de caballos en tableros conexos generales (Siegel @siegel2026). Frente a esta intratabilidad general, mostramos que la simetría de dos filas opuestas en un tablero rectangular permite determinar exactamente el mínimo.
 
 == Resultados principales <sec:resultados-principales>
 
-El aporte central de este trabajo resuelve completamente el intercambio óptimo de dos filas de torres en tableros de $m times n$ para todo $m >= 5$ y $n >= 2$ (@thm:rooks en la @sec:problema-principal): el número mínimo de movimientos es exactamente
-$ T_min (m, n) = 4n + 1, $
-lo que da $33$ movimientos en el tablero estándar de $8 times 8$. También se analiza el comportamiento en los casos de pocas filas ($m in {2, 3, 4}$, @prop:rows).
-
-En la @sec:otras-piezas se estudian las variaciones en el tablero de $8 times 8$ al reemplazar las torres por las restantes piezas del ajedrez. El siguiente cuadro resume los valores mínimos obtenidos:
-
-#align(center)[
-  #set text(size: 9.5pt)
-  #table(
-    columns: (auto, auto, 1fr),
-    inset: (x: 10pt, y: 6pt),
-    align: (left, center, left),
-    stroke: none,
-    table.hline(stroke: 0.8pt),
-    [*Pieza*], [*Mínimo ($8 times 8$)*], [*Observación estructural*],
-    table.hline(stroke: 0.4pt),
-    [Torre], [$33$], [Caso particular del @thm:rooks ($4n + 1$ para $m >= 5, n = 8$).],
-    [Dama], [$23$], [Resultado de Tokarev @tokarev2005: $6$ pares centrales en $3$ y $4$ esquinas en $5$.],
-    [Alfil], [$30$], [Partición por color de casilla en dos subproblemas de $15$ movimientos.],
-    [Caballo], [$64$], [Enfoque por teoría de grafos (extensión del método de Guarini).],
-    [Rey], [$112$], [$7$ pasos por cada una de las $16$ piezas mediante cruces diagonales.],
-    [Peón], [Imposible], [Sin capturas los peones no cambian de columna ni pueden sobrepasarse.],
-    table.hline(stroke: 0.8pt),
+En la @sec:problema-principal demostramos (@thm:rooks y @prop:rows) que, para $m >= 3$ y $n >= 2$, el mínimo para torres es
+$
+  T_min (m, n) = cases(
+    4n + 1 & quad "si" m >= 5\,,
+    4n + 2 & quad "si" m in {3, 4},
   )
-]
+$
+es decir, $T_min (8, 8) = 33$ en el tablero estándar; para $m = 2$ el intercambio es imposible por falta de casillas vacías.
+
+En la @sec:otras-piezas determinamos el mínimo en $8 times 8$ para las demás piezas:
+- *Peones:* imposible ($T_min = infinity$).
+- *Reyes (@prop:kings):* $112$ movimientos ($2n(m - 1)$ en general, para $m >= 3$, $n >= 2$).
+- *Damas (@prop:queens, Tokarev @tokarev2005):* $23$ movimientos.
+- *Alfiles (@prop:bishops):* $30$ movimientos ($15$ por color de casilla).
+- *Caballos (@prop:knights):* $64$ movimientos ($4$ saltos por caballo).

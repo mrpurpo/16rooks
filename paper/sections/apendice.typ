@@ -40,11 +40,11 @@
 
 = Apéndice: Construcciones explícitas en el tablero $8 times 8$ <sec:apendice>
 
-En este apéndice se listan las secuencias completas de movimientos óptimos para todas las piezas resolubles en el tablero estándar de $8 times 8$. En todos los casos, las $8$ piezas blancas (*B*) parten en la fila $1$ (`a1`–`h1`) y las $8$ piezas negras (*N*) en la fila $8$ (`a8`–`h8`); cada entrada indica el color de la pieza y las casillas origen y destino (`origen-destino`).
+Se listan las secuencias óptimas completas en $8 times 8$ para todas las piezas resolubles. Las blancas (*B*) parten en `a1`–`h1` y las negras (*N*) en `a8`–`h8`; cada entrada indica el color y las casillas `origen-destino`.
 
 == Torres ($33$ movimientos) <sec:ap-torres>
 
-Secuencia completa correspondiente a la construcción del @thm:rooks para $m = n = 8$ ($H = 8$ movimientos horizontales, $V = 25$ verticales, $L = 7$ movimientos largos):
+Construcción del @thm:rooks para $m = n = 8$ ($H = 8$ movimientos horizontales, $V = 25$ verticales, $L = 7$ movimientos largos):
 
 #move-table(
   (
@@ -63,7 +63,7 @@ Secuencia completa correspondiente a la construcción del @thm:rooks para $m = n
 
 == Damas ($23$ movimientos) <sec:ap-damas>
 
-Transcripción algebraica de la construcción de Tokarev @tokarev2005 (@prop:queens, @fig:damas-tokarev), adaptada a nuestra convención (blancas en la fila $1$, negras en la fila $8$) y respetando además la alternancia estricta de turnos:
+Construcción de Tokarev @tokarev2005 (@prop:queens, @fig:damas-tokarev), adaptada a nuestra convención y con alternancia estricta de turnos:
 
 #move-table(
   (
@@ -79,7 +79,7 @@ Transcripción algebraica de la construcción de Tokarev @tokarev2005 (@prop:que
 
 == Alfiles ($30$ movimientos) <sec:ap-alfiles>
 
-Construcción óptima de la @prop:bishops descompuesta en sus dos subproblemas independientes: los movimientos $1$–$15$ intercambian los alfiles de casillas oscuras (`a1, c1, e1, g1` con `b8, d8, f8, h8`) y los movimientos $16$–$30$ ejecutan la reflexión horizontal (`a` $arrow.l.r$ `h`) sobre las casillas claras (`b1, d1, f1, h1` con `a8, c8, e8, g8`):
+Construcción de la @prop:bishops: los movimientos $1$–$15$ intercambian los alfiles de casillas oscuras (`a1, c1, e1, g1` con `b8, d8, f8, h8`), y los $16$–$30$ aplican la reflexión horizontal (`a` $arrow.l.r$ `h`) a las claras (`b1, d1, f1, h1` con `a8, c8, e8, g8`):
 
 #move-table(
   (
@@ -101,7 +101,7 @@ Construcción óptima de la @prop:bishops descompuesta en sus dos subproblemas i
 
 == Caballos ($64$ movimientos) <sec:ap-caballos>
 
-Construcción óptima de la @prop:knights en exactamente $4$ saltos por cada uno de los $16$ caballos (con alternancia estricta de bandos):
+Construcción de la @prop:knights, con $4$ saltos por caballo y alternancia estricta de bandos:
 
 #move-table(
   (
@@ -127,7 +127,7 @@ Construcción óptima de la @prop:knights en exactamente $4$ saltos por cada uno
 
 == Reyes ($112$ movimientos) <sec:ap-reyes>
 
-Construcción óptima de la @prop:kings columna por columna ($14$ movimientos por columna, $7$ pasos verticales efectivos por rey):
+Construcción de la @prop:kings columna por columna ($14$ movimientos por columna, $7$ por rey):
 
 #move-table(
   (
